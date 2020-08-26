@@ -48,6 +48,7 @@ import java.util.Map;
 import static com.streamsets.pipeline.lib.jdbc.JdbcErrors.JDBC_14;
 import static com.streamsets.pipeline.lib.operation.OperationType.DELETE_CODE;
 import static com.streamsets.pipeline.lib.operation.OperationType.INSERT_CODE;
+import static com.streamsets.pipeline.lib.operation.OperationType.UPDATE_CODE;
 
 public class JdbcGenericRecordWriter extends JdbcBaseRecordWriter {
   private static final Logger LOG = LoggerFactory.getLogger(JdbcGenericRecordWriter.class);
@@ -147,7 +148,7 @@ public class JdbcGenericRecordWriter extends JdbcBaseRecordWriter {
 
         boolean opCodeValid = opCode > 0;
         boolean opCodeUnchanged = opCode == prevOpCode;
-        boolean supportedOpCode = opCode == DELETE_CODE || opCode == INSERT_CODE && columnHash.equals(prevColumnHash);
+        boolean supportedOpCode = opCode == DELETE_CODE || ((opCode == UPDATE_CODE || opCode == INSERT_CODE) && columnHash.equals(prevColumnHash));
         boolean canEnqueue = opCodeValid && opCodeUnchanged && supportedOpCode;
 
         if (canEnqueue) {
