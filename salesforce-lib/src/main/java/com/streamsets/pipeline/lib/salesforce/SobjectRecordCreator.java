@@ -479,8 +479,11 @@ public abstract class SobjectRecordCreator extends ForceRecordCreatorImpl {
       } else if (STRING_TYPES.contains(sfdcType)) {
         return  com.streamsets.pipeline.api.Field.create(com.streamsets.pipeline.api.Field.Type.STRING, val);
       } else if (BINARY_TYPES.contains(sfdcType)) {
-        return  com.streamsets.pipeline.api.Field.create(com.streamsets.pipeline.api.Field.Type.BYTE_ARRAY,
-            Base64.getDecoder().decode((String)val));
+        byte[] bytes = new byte[0];
+        if (val != null) {
+          bytes = Base64.getDecoder().decode((String)val);
+        }
+        return com.streamsets.pipeline.api.Field.create(com.streamsets.pipeline.api.Field.Type.BYTE_ARRAY, bytes);
       } else if (DATETIME_TYPES.contains(sfdcType)) {
         if (val != null && !(val instanceof String)) {
           throw new StageException(
